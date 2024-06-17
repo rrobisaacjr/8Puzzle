@@ -5,6 +5,7 @@ import customtkinter
 import customtkinter
 from CTkTable import *
 import is_solvable
+import dfs
 
 customtkinter.set_appearance_mode("System")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue"
@@ -76,25 +77,25 @@ class App(customtkinter.CTk):
         self.tabview.tab("  BFS  ").grid_columnconfigure(0, weight=1)
 
         # DFS Actions Tab
-        self.dfs_solve_button = customtkinter.CTkButton(self.tabview.tab("  DFS  "), text="Solve")
+        self.dfs_solve_button = customtkinter.CTkButton(self.tabview.tab("  DFS  "), text="Solve", command=self.dfs_solve, state="disabled")
         self.dfs_solve_button.grid(row=0, column=0, padx=20, pady=(20, 5))
-        self.dfs_slider = customtkinter.CTkSlider(self.tabview.tab("  DFS  "), from_=0, to=4, number_of_steps=4)
+        self.dfs_slider = customtkinter.CTkSlider(self.tabview.tab("  DFS  "), from_=0, to=4, number_of_steps=4, state="disabled")
         self.dfs_slider.grid(row=1, column=0, padx=20, pady=(10, 10))
         self.dfs_slider.configure(self.dfs_slider.set(0))
-        self.dfs_next_button = customtkinter.CTkButton(self.tabview.tab("  DFS  "), text="Next", command=self.dfs_increment_slider)
+        self.dfs_next_button = customtkinter.CTkButton(self.tabview.tab("  DFS  "), text="Next", command=self.dfs_increment_slider, state="disabled")
         self.dfs_next_button.grid(row=2, column=0, padx=20, pady=(5, 5))
-        self.dfs_reset_button = customtkinter.CTkButton(self.tabview.tab("  DFS  "), text="Reset")
+        self.dfs_reset_button = customtkinter.CTkButton(self.tabview.tab("  DFS  "), text="Reset", state="disabled")
         self.dfs_reset_button.grid(row=3, column=0, padx=20, pady=(5, 0))
         
         # BFS Actions Tab
-        self.bfs_solve_button = customtkinter.CTkButton(self.tabview.tab("  BFS  "), text="Solve")
+        self.bfs_solve_button = customtkinter.CTkButton(self.tabview.tab("  BFS  "), text="Solve", state="disabled")
         self.bfs_solve_button.grid(row=0, column=0, padx=20, pady=(20, 5))
-        self.bfs_slider = customtkinter.CTkSlider(self.tabview.tab("  BFS  "), from_=0, to=4, number_of_steps=4)
+        self.bfs_slider = customtkinter.CTkSlider(self.tabview.tab("  BFS  "), from_=0, to=4, number_of_steps=4, state="disabled")
         self.bfs_slider.grid(row=1, column=0, padx=20, pady=(10, 10))
         self.bfs_slider.configure(self.bfs_slider.set(0))
-        self.bfs_next_button = customtkinter.CTkButton(self.tabview.tab("  BFS  "), text="Next", command=self.bfs_increment_slider)
+        self.bfs_next_button = customtkinter.CTkButton(self.tabview.tab("  BFS  "), text="Next", command=self.bfs_increment_slider, state="disabled")
         self.bfs_next_button.grid(row=2, column=0, padx=20, pady=(5, 5))
-        self.bfs_reset_button = customtkinter.CTkButton(self.tabview.tab("  BFS  "), text="Reset")
+        self.bfs_reset_button = customtkinter.CTkButton(self.tabview.tab("  BFS  "), text="Reset", state="disabled")
         self.bfs_reset_button.grid(row=3, column=0, padx=20, pady=(5, 0))
 
         # create textbox
@@ -174,6 +175,7 @@ class App(customtkinter.CTk):
             print(" ".join(map(str, row)))
             
     def upload_in_file(self):
+        self.path_cost = 0
         self.textbox2.delete(1.0, tk.END)
         self.puzzle.configure(values=[[None, None, None], [None, None, None], [None, None, None]])
         
@@ -201,16 +203,20 @@ class App(customtkinter.CTk):
                                 
                 # Update the CTkTable with new puzzle values
                 self.puzzle.configure(values=self.puzzle_values)
+                
+                # Display Path Cost
                 self.label_tab_4_5.configure(text=self.path_cost)
+                
+                # Enable Solve Buttons
+                self.dfs_solve_button.configure(state="normal")
+                
                 messagebox.showinfo("Success", "Text file initialized successfully.")
             except Exception as e:
                 messagebox.showerror("Error", f"Failed to execute Text file: {e}")
         else:
             # If user clicked cancel, keep the current values unchanged
             self.puzzle.configure(values=[[None, None, None], [None, None, None], [None, None, None]])   
-                
-    def cell_pressed(self, row, column):
-        print(f"Cell pressed - Row: {row}, Column: {column}")
+
         
     def selectCell(self, cell):
       
@@ -277,6 +283,30 @@ class App(customtkinter.CTk):
         # self.textbox2.configure(text=moves)
         self.textbox2.delete(1.0, tk.END)
         self.textbox2.insert(tk.END, "\n\n\n" + moves)
+        
+    def dfs_solve(self):
+        print("dfs")
+        self.puzzle.configure(state="disabled")
+        self.solution = dfs.DFSearch(self.puzzle_values, dfs.goal_test, dfs.actions, dfs.result)
+        print("DFS Solution:", self.solution)
+        
+        # Update path cost
+        self.path_cost = len(self.solution)
+        self.label_tab_4_5.configure(text=self.path_cost)
+        
+        # Convert the array to a string with spaces in between elements
+        output_string = ' '.join(self.solution)
+
+        # Write the output string to the file
+        with open(self.puzzle_file_path, 'w') as file:
+            file.write(output_string)
+        
+        self.dfs_next_button.configure(state="normal")
+        self.dfs_reset_button.configure(state="normal")
+        self.updateTextbox()
+        
+        
+        
         
 
 if __name__ == "__main__":
