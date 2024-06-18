@@ -57,16 +57,16 @@ class App(customtkinter.CTk):
         self.scaling_optionemenu.grid(row=8, column=0, padx=20, pady=(10, 20))
 
         # create main entry and button
-        self.entry = customtkinter.CTkEntry(self, placeholder_text="Source Puzzle Text File")
+        self.entry = customtkinter.CTkEntry(self, placeholder_text="Source Puzzle Input File")
         self.entry.grid(row=3, column=1, columnspan=2, padx=(20, 0), pady=(20, 20), sticky="nsew")
 
-        self.main_button_1 = customtkinter.CTkButton(master=self, fg_color="transparent", border_width=2, text_color=("gray10", "#DCE4EE"), text= "Upload Puzzle Text Data", command=self.upload_in_file)
+        self.main_button_1 = customtkinter.CTkButton(master=self, fg_color="transparent", border_width=2, text_color=("gray10", "#DCE4EE"), text= "Upload Input Puzzle Data (Initial State)", command=self.upload_in_file)
         self.main_button_1.grid(row=3, column=3, padx=(20, 20), pady=(20, 20), sticky="nsew")
 
         # create puzzle
         self.puzzle_frame = customtkinter.CTkFrame(self, width=100, fg_color="transparent")
         self.puzzle_frame.grid(row=0, column=1, rowspan=3, padx=(20, 0), pady=(20, 0), sticky="nsew")
-        self.puzzle = CTkTable(self.puzzle_frame, row=3, column=3, width=500, hover_color="gray20", colors=["gray10", "gray10"], font=customtkinter.CTkFont(size=70), write=0, values=[[None, None, None], [None, None, None], [None, None, None]],command=self.selectCell)
+        self.puzzle = CTkTable(self.puzzle_frame, row=3, column=3, width=500, hover_color="gray20", colors=["gray10", "gray11"], font=customtkinter.CTkFont(size=70), write=0, values=[[None, None, None], [None, None, None], [None, None, None]],command=self.selectCell)
         self.puzzle.pack(expand=True, fill="both", padx=0, pady=0)
 
         # create tabview
@@ -106,37 +106,45 @@ class App(customtkinter.CTk):
         self.label_tab_6 = customtkinter.CTkLabel(self.textbox2, text="Actions", fg_color="grey20", corner_radius=5, width=250)
         self.label_tab_6.grid(row=0, column=0, padx=10, pady=10, sticky="n")
 
-        # create scrollable frame
-        self.scrollable_frame = customtkinter.CTkScrollableFrame(self, label_text="Result")
-        self.scrollable_frame.grid(row=1, column=2, padx=(20, 0), pady=(20, 0), sticky="nsew")
-        self.scrollable_frame.grid_columnconfigure(0, weight=1)
-        self.label_tab_3 = customtkinter.CTkLabel(self.scrollable_frame, text="Solvability", fg_color="grey20", corner_radius=5, width=250)
-        self.label_tab_3.grid(row=0, column=0, padx=20, pady=0)
-        self.label_tab_3_5 = customtkinter.CTkLabel(self.scrollable_frame, text="", fg_color="grey30", corner_radius=5, width=250)
-        self.label_tab_3_5.grid(row=1, column=0, padx=20, pady=(5, 10))
-        self.label_tab_4 = customtkinter.CTkLabel(self.scrollable_frame, text="Path Cost", fg_color="grey20", corner_radius=5, width=250)
-        self.label_tab_4.grid(row=2, column=0, padx=20, pady=0)
-        self.label_tab_4_5 = customtkinter.CTkLabel(self.scrollable_frame, text="", fg_color="grey30", corner_radius=5, width=250)
-        self.label_tab_4_5.grid(row=3, column=0, padx=20, pady=(5, 10))
-        self.label_tab_5 = customtkinter.CTkLabel(self.scrollable_frame, text="Explored States", fg_color="grey20", corner_radius=5, width=250)
-        self.label_tab_5.grid(row=4, column=0, padx=20, pady=0)
-        self.label_tab_5_5 = customtkinter.CTkLabel(self.scrollable_frame, text="", fg_color="grey30", corner_radius=5, width=250)
-        self.label_tab_5_5.grid(row=5, column=0, padx=20, pady=(5, 10))
+        # create results scrollable frame
+        self.results_scrollable_frame = customtkinter.CTkScrollableFrame(self, label_text="Result")
+        self.results_scrollable_frame.grid(row=1, column=3, padx=(20, 20), pady=(20, 0), sticky="nsew")
+        self.results_scrollable_frame.grid_columnconfigure(0, weight=1)
+        self.label_solvability_title = customtkinter.CTkLabel(self.results_scrollable_frame, text="Solvability", fg_color="grey20", corner_radius=5, width=250)
+        self.label_solvability_title.grid(row=0, column=0, padx=20, pady=0)
+        self.label_solvability_value = customtkinter.CTkLabel(self.results_scrollable_frame, text="", fg_color="grey30", corner_radius=5, width=250)
+        self.label_solvability_value.grid(row=1, column=0, padx=20, pady=(5, 10))
+        self.label_path_cost_title = customtkinter.CTkLabel(self.results_scrollable_frame, text="Path Cost", fg_color="grey20", corner_radius=5, width=250)
+        self.label_path_cost_title.grid(row=2, column=0, padx=20, pady=0)
+        self.label_path_cost_value = customtkinter.CTkLabel(self.results_scrollable_frame, text="", fg_color="grey30", corner_radius=5, width=250)
+        self.label_path_cost_value.grid(row=3, column=0, padx=20, pady=(5, 10))
+        self.label_explored_states_title = customtkinter.CTkLabel(self.results_scrollable_frame, text="Explored States", fg_color="grey20", corner_radius=5, width=250)
+        self.label_explored_states_title.grid(row=4, column=0, padx=20, pady=0)
+        self.label_explored_states_value = customtkinter.CTkLabel(self.results_scrollable_frame, text="", fg_color="grey30", corner_radius=5, width=250)
+        self.label_explored_states_value.grid(row=5, column=0, padx=20, pady=(5, 10))
         
-        # create checkbox and switch frame
-        self.checkbox_slider_frame = customtkinter.CTkFrame(self)
-        self.checkbox_slider_frame.grid(row=1, column=3, padx=(20, 20), pady=(20, 0), sticky="nsew")
-        self.checkbox_1 = customtkinter.CTkCheckBox(master=self.checkbox_slider_frame)
-        self.checkbox_1.grid(row=1, column=0, pady=(20, 0), padx=20, sticky="n")
-        self.checkbox_2 = customtkinter.CTkCheckBox(master=self.checkbox_slider_frame)
-        self.checkbox_2.grid(row=2, column=0, pady=(20, 0), padx=20, sticky="n")
-        self.checkbox_3 = customtkinter.CTkCheckBox(master=self.checkbox_slider_frame)
-        self.checkbox_3.grid(row=3, column=0, pady=20, padx=20, sticky="n")
+        # create information scrollable frame
+        self.dfs_text = "Depth-First Search (DFS) is an algorithm for exploring nodes and traversing graphs or trees. This Python implementation focuses on solving a tile puzzle using DFS. \n\nThe DFSearch function starts with an initial state and an empty action list in the frontier, while keeping track of visited states in the explored set. It continues until the goal state, where tiles are arranged in a specific order, is found. \n\nStates are converted to tuples to manage uniqueness, and possible moves are determined by the position of the empty tile using the actions function. \n\nThe result function simulates moves by swapping tiles based on specified actions, pushing new states and action sequences onto the frontier. If no solution is found, the function returns None. \n\nThis approach efficiently navigates the puzzle's state space to identify a sequence of actions leading from the starting configuration to the desired goal."
+        self.information_scrollable_frame = customtkinter.CTkScrollableFrame(self, label_text="Information", fg_color="grey12")
+        self.information_scrollable_frame.grid(row=1, column=2, padx=(20, 0), pady=(20, 0), sticky="nsew")
+        self.information_scrollable_frame.grid_columnconfigure(0, weight=1)
+        
+        self.label_about_DFS_title = customtkinter.CTkLabel(self.information_scrollable_frame, text="DFS (Depth-First Search)", fg_color="transparent", corner_radius=5, width=250,
+                                                  font=customtkinter.CTkFont(size=14, weight="bold"))
+        self.label_about_DFS_title.grid(row=0, column=0, padx=20, pady=0)
+        # self.label_about_DFS_text = customtkinter.CTkLabel(self.information_scrollable_frame, text=self.dfs_text, 
+        #                                                    fg_color="transparent", corner_radius=5, width=300, height= 300, wraplength=200, justify="center", anchor="e")
+        # self.label_about_DFS_text.grid(row=1, column=0, padx=10, pady=(5, 10))
+        self.textbox3 = customtkinter.CTkTextbox(self.information_scrollable_frame, width=250, height=520, fg_color="transparent", activate_scrollbars=False, wrap="word")
+        self.textbox3.grid(row=1, column=0, padx=(10, 10), pady=(5, 0), sticky="nsew")
+        self.textbox3.insert(tk.END, self.dfs_text)
+        
+        
 
         # set default values
         self.sidebar_button_3.configure(state="disabled", text="Disabled CTkButton")
-        self.checkbox_3.configure(state="disabled")
-        self.checkbox_1.select()
+        # self.checkbox_3.configure(state="disabled")
+        # self.checkbox_1.select()
         self.appearance_mode_optionemenu.set("Dark")
         self.scaling_optionemenu.set("100%")
 
@@ -199,7 +207,7 @@ class App(customtkinter.CTk):
                     ]
                 
                 # Check if the new puzzle values is solvable
-                self.label_tab_3_5.configure(text=is_solvable.is_solvable([
+                self.label_solvability_value.configure(text=is_solvable.is_solvable([
                         [int(val) if val != "" else 0 for val in line.split()]
                         for line in lines
                     ]))           
@@ -208,7 +216,7 @@ class App(customtkinter.CTk):
                 self.puzzle.configure(values=self.puzzle_values)
                 
                 # Display Path Cost
-                self.label_tab_4_5.configure(text=self.path_cost)
+                self.label_path_cost_value.configure(text=self.path_cost)
                 
                 # Enable Solve Buttons
                 self.dfs_solve_button.configure(state="normal")
@@ -264,7 +272,7 @@ class App(customtkinter.CTk):
                     
                     # Increment Path Cost
                     self.path_cost += 1
-                    self.label_tab_4_5.configure(text=self.path_cost)
+                    self.label_path_cost_value.configure(text=self.path_cost)
                     
                     move_made = True
                     break
@@ -278,9 +286,9 @@ class App(customtkinter.CTk):
         self.goal_values = [[1, 2, 3], [4, 5, 6], [7, 8, ""]]
         
         if self.puzzle_values == self.goal_values:
-            messagebox.showinfo("Success", "Puzzle is solved!")
             self.puzzle.configure(state="disabled")
             print("Puzzle is solved!")
+            messagebox.showinfo("Success", "Puzzle is solved!")
     
     def updateTextbox(self):
         with open(self.puzzle_file_path, 'r') as file:
@@ -363,7 +371,7 @@ class App(customtkinter.CTk):
         
         # Update path cost
         self.path_cost = len(self.solution)
-        self.label_tab_4_5.configure(text=self.path_cost)
+        self.label_path_cost_value.configure(text=self.path_cost)
         
         # Convert the array to a string with spaces in between elements
         output_string = ' '.join(self.solution)
