@@ -3,6 +3,7 @@ import tkinter as tk
 from tkinter import filedialog, messagebox
 import customtkinter
 import customtkinter
+import time
 from CTkTable import *
 import is_solvable
 import dfs
@@ -85,8 +86,8 @@ class App(customtkinter.CTk):
         self.dfs_slider.configure(self.dfs_slider.set(0))
         self.dfs_next_button = customtkinter.CTkButton(self.tabview.tab("  DFS  "), text="Next", command=self.moveNextSolution, state="disabled")
         self.dfs_next_button.grid(row=2, column=0, padx=20, pady=(5, 5))
-        self.dfs_reset_button = customtkinter.CTkButton(self.tabview.tab("  DFS  "), text="Reset", state="disabled")
-        self.dfs_reset_button.grid(row=3, column=0, padx=20, pady=(5, 0))
+        self.dfs_autoplay = customtkinter.CTkButton(self.tabview.tab("  DFS  "), text="Autoplay", state="disabled", command=self.autoplaySolution)
+        self.dfs_autoplay.grid(row=3, column=0, padx=20, pady=(5, 0))
         
         # BFS Actions Tab
         self.bfs_solve_button = customtkinter.CTkButton(self.tabview.tab("  BFS  "), text="Solve", state="disabled")
@@ -177,6 +178,7 @@ class App(customtkinter.CTk):
             
     def upload_in_file(self):
         self.path_cost = 0
+        self.current_step = 0
         self.textbox2.delete(1.0, tk.END)
         self.puzzle.configure(values=[[None, None, None], [None, None, None], [None, None, None]])
         
@@ -283,7 +285,7 @@ class App(customtkinter.CTk):
     def updateTextbox(self):
         with open(self.puzzle_file_path, 'r') as file:
             moves = file.read()
-        # self.textbox2.configure(text=moves)
+
         self.textbox2.delete(1.0, tk.END)
         self.textbox2.insert(tk.END, "\n\n\n" + moves)
         
@@ -293,6 +295,7 @@ class App(customtkinter.CTk):
             direction = self.solution[self.current_step]
             self.moveEmptyCell(direction)
             self.current_step += 1
+            
             self.checkWin()
         else:
             messagebox.showinfo("Info", "No more moves left in the solution.")
@@ -351,7 +354,6 @@ class App(customtkinter.CTk):
             messagebox.showerror("Error", f"Invalid direction: {direction}")
             print(f"Invalid direction: {direction}")
         
-        
     def dfs_solve(self):
         print("dfs")
         self.puzzle.configure(state="disabled")
@@ -371,9 +373,18 @@ class App(customtkinter.CTk):
             file.write(output_string)
         
         self.dfs_next_button.configure(state="normal")
-        self.dfs_reset_button.configure(state="normal")
+        self.dfs_autoplay.configure(state="normal")
         self.updateTextbox()
         
+        self.dfs_slider.configure(to=len(self.solution), number_of_steps=len(self.solution))
+    
+    def autoplaySolution(self):
+        self.dfs_next_button.configure(state="disabled")
+        self.dfs_autoplay.configure(state="disabled")
+        while self.current_step < len(self.solution):
+            self.moveNextSolution()
+            self.update()
+            time.sleep(0.15)
         
         
         
