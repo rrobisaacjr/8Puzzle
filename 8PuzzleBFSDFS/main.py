@@ -15,6 +15,7 @@ class App(customtkinter.CTk):
         super().__init__()
         
         self.path_cost = 0
+        self.current_step = 0
         
         # initialize puzzle.out file
         self.script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -82,7 +83,7 @@ class App(customtkinter.CTk):
         self.dfs_slider = customtkinter.CTkSlider(self.tabview.tab("  DFS  "), from_=0, to=4, number_of_steps=4, state="disabled")
         self.dfs_slider.grid(row=1, column=0, padx=20, pady=(10, 10))
         self.dfs_slider.configure(self.dfs_slider.set(0))
-        self.dfs_next_button = customtkinter.CTkButton(self.tabview.tab("  DFS  "), text="Next", command=self.dfs_increment_slider, state="disabled")
+        self.dfs_next_button = customtkinter.CTkButton(self.tabview.tab("  DFS  "), text="Next", command=self.moveNextSolution, state="disabled")
         self.dfs_next_button.grid(row=2, column=0, padx=20, pady=(5, 5))
         self.dfs_reset_button = customtkinter.CTkButton(self.tabview.tab("  DFS  "), text="Reset", state="disabled")
         self.dfs_reset_button.grid(row=3, column=0, padx=20, pady=(5, 0))
@@ -276,6 +277,8 @@ class App(customtkinter.CTk):
         
         if self.puzzle_values == self.goal_values:
             messagebox.showinfo("Success", "Puzzle is solved!")
+            self.puzzle.configure(state="disabled")
+            print("Puzzle is solved!")
     
     def updateTextbox(self):
         with open(self.puzzle_file_path, 'r') as file:
@@ -284,9 +287,75 @@ class App(customtkinter.CTk):
         self.textbox2.delete(1.0, tk.END)
         self.textbox2.insert(tk.END, "\n\n\n" + moves)
         
+    def moveNextSolution(self):
+        
+        if self.current_step < len(self.solution):
+            direction = self.solution[self.current_step]
+            self.moveEmptyCell(direction)
+            self.current_step += 1
+            self.checkWin()
+        else:
+            messagebox.showinfo("Info", "No more moves left in the solution.")
+        
+        
+        self.dfs_increment_slider()
+    
+    def moveEmptyCell(self, direction):
+        # Find the position of the empty cell
+        empty_row, empty_col = None, None
+        for row in range(3):
+            for col in range(3):
+                if self.puzzle_values[row][col] == "":
+                    empty_row, empty_col = row, col
+                    break
+            if empty_row is not None:
+                break
+        
+        if empty_row is None or empty_col is None:
+            messagebox.showerror("Error", "Empty cell not found.")
+            return
+
+        # Determine the target cell based on the direction
+        directions = {
+            'U': (-1, 0),
+            'D': (1, 0),
+            'L': (0, -1),
+            'R': (0, 1)
+        }
+        
+        if direction in directions:
+            dr, dc = directions[direction]
+            new_row, new_col = empty_row + dr, empty_col + dc
+
+            # Log current state and attempted move
+            print(f"Empty cell at ({empty_row}, {empty_col}).")
+            print(f"Attempting to move {direction} to ({new_row}, {new_col}).")
+
+            # Check if the move is within bounds
+            if 0 <= new_row < 3 and 0 <= new_col < 3:
+                # Swap the empty cell with the target cell
+                self.puzzle_values[empty_row][empty_col], self.puzzle_values[new_row][new_col] = \
+                self.puzzle_values[new_row][new_col], self.puzzle_values[empty_row][empty_col]
+
+                # Log the puzzle state after move
+                print("Puzzle state after move:")
+                for row in self.puzzle_values:
+                    print(row)
+
+                # Update the puzzle display
+                self.puzzle.configure(values=self.puzzle_values)
+            else:
+                messagebox.showinfo("Info", "Move out of bounds.")
+                print("Move out of bounds.")
+        else:
+            messagebox.showerror("Error", f"Invalid direction: {direction}")
+            print(f"Invalid direction: {direction}")
+        
+        
     def dfs_solve(self):
         print("dfs")
         self.puzzle.configure(state="disabled")
+        self.dfs_solve_button.configure(state="disabled")
         self.solution = dfs.DFSearch(self.puzzle_values, dfs.goal_test, dfs.actions, dfs.result)
         print("DFS Solution:", self.solution)
         
