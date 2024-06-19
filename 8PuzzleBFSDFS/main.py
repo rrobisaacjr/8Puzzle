@@ -37,7 +37,7 @@ class App(customtkinter.CTk):
         self.sidebar_frame = customtkinter.CTkFrame(self, width=140, corner_radius=0)
         self.sidebar_frame.grid(row=0, column=0, rowspan=4, sticky="nsew")
         self.sidebar_frame.grid_rowconfigure(4, weight=1)
-        self.logo_label = customtkinter.CTkLabel(self.sidebar_frame, text="8-Puzzle", font=customtkinter.CTkFont(size=20, weight="bold"))
+        self.logo_label = customtkinter.CTkLabel(self.sidebar_frame, text="8-Puzzle", font=customtkinter.CTkFont(size=20, weight="bold", family='Roboto'))
         self.logo_label.grid(row=0, column=0, padx=20, pady=(20, 10))
         self.sidebar_button_1 = customtkinter.CTkButton(self.sidebar_frame, command=self.sidebar_button_event)
         self.sidebar_button_1.grid(row=1, column=0, padx=20, pady=10)
@@ -57,16 +57,16 @@ class App(customtkinter.CTk):
         self.scaling_optionemenu.grid(row=8, column=0, padx=20, pady=(10, 20))
 
         # create main entry and button
-        self.entry = customtkinter.CTkEntry(self, placeholder_text="Source Puzzle Input File")
+        self.entry = customtkinter.CTkEntry(self, placeholder_text="Source Puzzle Input File", font=customtkinter.CTkFont(family='Roboto'))
         self.entry.grid(row=3, column=1, columnspan=2, padx=(20, 0), pady=(20, 20), sticky="nsew")
 
-        self.main_button_1 = customtkinter.CTkButton(master=self, fg_color="transparent", border_width=2, text_color=("gray10", "#DCE4EE"), text= "Upload Input Puzzle Data (Initial State)", command=self.upload_in_file)
+        self.main_button_1 = customtkinter.CTkButton(master=self, fg_color="transparent", border_width=2, text_color=("gray10", "#DCE4EE"), text= "Upload Input Puzzle Data (Initial State)", command=self.upload_in_file, font=customtkinter.CTkFont(family='Roboto'))
         self.main_button_1.grid(row=3, column=3, padx=(20, 20), pady=(20, 20), sticky="nsew")
 
         # create puzzle
         self.puzzle_frame = customtkinter.CTkFrame(self, width=100, fg_color="transparent")
         self.puzzle_frame.grid(row=0, column=1, rowspan=3, padx=(20, 0), pady=(20, 0), sticky="nsew")
-        self.puzzle = CTkTable(self.puzzle_frame, row=3, column=3, width=500, hover_color="gray20", colors=["gray10", "gray11"], font=customtkinter.CTkFont(size=70), write=0, values=[[None, None, None], [None, None, None], [None, None, None]],command=self.selectCell)
+        self.puzzle = CTkTable(self.puzzle_frame, row=3, column=3, width=500, hover_color="gray20", colors=["gray10", "gray11"], font=customtkinter.CTkFont(size=70, family='Roboto'), write=0, values=[[None, None, None], [None, None, None], [None, None, None]],command=self.selectCell)
         self.puzzle.pack(expand=True, fill="both", padx=0, pady=0)
 
         # create tabview
@@ -79,14 +79,14 @@ class App(customtkinter.CTk):
         self.tabview.tab("  BFS  ").grid_columnconfigure(0, weight=1)
 
         # DFS Actions Tab
-        self.dfs_solve_button = customtkinter.CTkButton(self.tabview.tab("  DFS  "), text="Solve", command=self.dfs_solve, state="disabled")
+        self.dfs_solve_button = customtkinter.CTkButton(self.tabview.tab("  DFS  "), text="Solve", command=self.dfs_solve, state="disabled", font=customtkinter.CTkFont(family='Roboto'))
         self.dfs_solve_button.grid(row=0, column=0, padx=20, pady=(20, 5))
         self.dfs_slider = customtkinter.CTkSlider(self.tabview.tab("  DFS  "), from_=0, to=4, number_of_steps=4, state="disabled")
         self.dfs_slider.grid(row=1, column=0, padx=20, pady=(10, 10))
         self.dfs_slider.configure(self.dfs_slider.set(0))
-        self.dfs_next_button = customtkinter.CTkButton(self.tabview.tab("  DFS  "), text="Next", command=self.moveNextSolution, state="disabled")
+        self.dfs_next_button = customtkinter.CTkButton(self.tabview.tab("  DFS  "), text="Next", command=self.moveNextSolution, state="disabled", font=customtkinter.CTkFont(family='Roboto'))
         self.dfs_next_button.grid(row=2, column=0, padx=20, pady=(5, 5))
-        self.dfs_autoplay = customtkinter.CTkButton(self.tabview.tab("  DFS  "), text="Autoplay", state="disabled", command=self.autoplaySolution)
+        self.dfs_autoplay = customtkinter.CTkButton(self.tabview.tab("  DFS  "), text="Autoplay", state="disabled", command=self.autoplaySolution, font=customtkinter.CTkFont(family='Roboto'))
         self.dfs_autoplay.grid(row=3, column=0, padx=20, pady=(5, 0))
         
         # BFS Actions Tab
@@ -101,41 +101,41 @@ class App(customtkinter.CTk):
         self.bfs_reset_button.grid(row=3, column=0, padx=20, pady=(5, 0))
 
         # create textbox
-        self.textbox2 = customtkinter.CTkTextbox(self, width=250)
+        self.textbox2 = customtkinter.CTkTextbox(self, width=250, font=customtkinter.CTkFont(family='Roboto'))
         self.textbox2.grid(row=0, column=3, padx=(20, 20), pady=(20, 0), sticky="nsew")
-        self.label_tab_6 = customtkinter.CTkLabel(self.textbox2, text="Actions", fg_color="grey20", corner_radius=5, width=250)
+        self.label_tab_6 = customtkinter.CTkLabel(self.textbox2, text="Actions", fg_color="grey20", corner_radius=5, width=250, font=customtkinter.CTkFont(family='Roboto'))
         self.label_tab_6.grid(row=0, column=0, padx=10, pady=10, sticky="n")
 
         # create results scrollable frame
-        self.results_scrollable_frame = customtkinter.CTkScrollableFrame(self, label_text="Result")
+        self.results_scrollable_frame = customtkinter.CTkScrollableFrame(self, label_text="Result", label_font=customtkinter.CTkFont(family='Roboto'))
         self.results_scrollable_frame.grid(row=1, column=3, padx=(20, 20), pady=(20, 0), sticky="nsew")
         self.results_scrollable_frame.grid_columnconfigure(0, weight=1)
-        self.label_solvability_title = customtkinter.CTkLabel(self.results_scrollable_frame, text="Solvability", fg_color="grey20", corner_radius=5, width=250)
+        self.label_solvability_title = customtkinter.CTkLabel(self.results_scrollable_frame, text="Solvability", fg_color="grey20", corner_radius=5, width=250, font=customtkinter.CTkFont(family='Roboto'))
         self.label_solvability_title.grid(row=0, column=0, padx=20, pady=0)
-        self.label_solvability_value = customtkinter.CTkLabel(self.results_scrollable_frame, text="", fg_color="grey30", corner_radius=5, width=250)
+        self.label_solvability_value = customtkinter.CTkLabel(self.results_scrollable_frame, text="", fg_color="grey30", corner_radius=5, width=250, font=customtkinter.CTkFont(family='Roboto'))
         self.label_solvability_value.grid(row=1, column=0, padx=20, pady=(5, 10))
-        self.label_path_cost_title = customtkinter.CTkLabel(self.results_scrollable_frame, text="Path Cost", fg_color="grey20", corner_radius=5, width=250)
+        self.label_path_cost_title = customtkinter.CTkLabel(self.results_scrollable_frame, text="Path Cost", fg_color="grey20", corner_radius=5, width=250, font=customtkinter.CTkFont(family='Roboto'))
         self.label_path_cost_title.grid(row=2, column=0, padx=20, pady=0)
-        self.label_path_cost_value = customtkinter.CTkLabel(self.results_scrollable_frame, text="", fg_color="grey30", corner_radius=5, width=250)
+        self.label_path_cost_value = customtkinter.CTkLabel(self.results_scrollable_frame, text="", fg_color="grey30", corner_radius=5, width=250, font=customtkinter.CTkFont(family='Roboto'))
         self.label_path_cost_value.grid(row=3, column=0, padx=20, pady=(5, 10))
-        self.label_explored_states_title = customtkinter.CTkLabel(self.results_scrollable_frame, text="Explored States", fg_color="grey20", corner_radius=5, width=250)
+        self.label_explored_states_title = customtkinter.CTkLabel(self.results_scrollable_frame, text="Explored States", fg_color="grey20", corner_radius=5, width=250, font=customtkinter.CTkFont(family='Roboto'))
         self.label_explored_states_title.grid(row=4, column=0, padx=20, pady=0)
-        self.label_explored_states_value = customtkinter.CTkLabel(self.results_scrollable_frame, text="", fg_color="grey30", corner_radius=5, width=250)
+        self.label_explored_states_value = customtkinter.CTkLabel(self.results_scrollable_frame, text="", fg_color="grey30", corner_radius=5, width=250, font=customtkinter.CTkFont(family='Roboto'))
         self.label_explored_states_value.grid(row=5, column=0, padx=20, pady=(5, 10))
         
         # create information scrollable frame
         self.dfs_text = "Depth-First Search (DFS) is an algorithm for exploring nodes and traversing graphs or trees. This Python implementation focuses on solving a tile puzzle using DFS. \n\nThe DFSearch function starts with an initial state and an empty action list in the frontier, while keeping track of visited states in the explored set. It continues until the goal state, where tiles are arranged in a specific order, is found. \n\nStates are converted to tuples to manage uniqueness, and possible moves are determined by the position of the empty tile using the actions function. \n\nThe result function simulates moves by swapping tiles based on specified actions, pushing new states and action sequences onto the frontier. If no solution is found, the function returns None. \n\nThis approach efficiently navigates the puzzle's state space to identify a sequence of actions leading from the starting configuration to the desired goal."
-        self.information_scrollable_frame = customtkinter.CTkScrollableFrame(self, label_text="Information", fg_color="grey12")
+        self.information_scrollable_frame = customtkinter.CTkScrollableFrame(self, label_text="Information", fg_color="grey12", label_font=customtkinter.CTkFont(family='Roboto'))
         self.information_scrollable_frame.grid(row=1, column=2, padx=(20, 0), pady=(20, 0), sticky="nsew")
         self.information_scrollable_frame.grid_columnconfigure(0, weight=1)
         
         self.label_about_DFS_title = customtkinter.CTkLabel(self.information_scrollable_frame, text="DFS (Depth-First Search)", fg_color="transparent", corner_radius=5, width=250,
-                                                  font=customtkinter.CTkFont(size=14, weight="bold"))
+                                                  font=customtkinter.CTkFont(size=14, weight="bold", family="Roboto"))
         self.label_about_DFS_title.grid(row=0, column=0, padx=20, pady=0)
         # self.label_about_DFS_text = customtkinter.CTkLabel(self.information_scrollable_frame, text=self.dfs_text, 
         #                                                    fg_color="transparent", corner_radius=5, width=300, height= 300, wraplength=200, justify="center", anchor="e")
         # self.label_about_DFS_text.grid(row=1, column=0, padx=10, pady=(5, 10))
-        self.textbox3 = customtkinter.CTkTextbox(self.information_scrollable_frame, width=250, height=520, fg_color="transparent", activate_scrollbars=False, wrap="word")
+        self.textbox3 = customtkinter.CTkTextbox(self.information_scrollable_frame, width=250, height=520, fg_color="transparent", activate_scrollbars=False, wrap="word", font=customtkinter.CTkFont(family='Roboto'))
         self.textbox3.grid(row=1, column=0, padx=(10, 10), pady=(5, 0), sticky="nsew")
         self.textbox3.insert(tk.END, self.dfs_text)
         
@@ -243,10 +243,10 @@ class App(customtkinter.CTk):
         print(self.puzzle_values)
         
         directions = {
-            "up": (-1, 0, "U "),
-            "down": (1, 0, "D "),
-            "left": (0, -1, "L "),
-            "right": (0, 1, "R ")
+            "up": (1, 0, "U "),
+            "right": (0, -1, "R "),
+            "down": (-1, 0, "D "),
+            "left": (0, 1, "L ")
         }
         
         move_made = False
@@ -366,7 +366,7 @@ class App(customtkinter.CTk):
         print("dfs")
         self.puzzle.configure(state="disabled")
         self.dfs_solve_button.configure(state="disabled")
-        self.solution = dfs.DFSearch(self.puzzle_values, dfs.goal_test, dfs.actions, dfs.result)
+        self.solution = dfs.DFSearch(self.puzzle_values, dfs.goal_test, dfs.actions, dfs.result, 100)
         print("DFS Solution:", self.solution)
         
         # Update path cost

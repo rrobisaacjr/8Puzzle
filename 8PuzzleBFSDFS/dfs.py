@@ -1,21 +1,21 @@
-def DFSearch(initial_state, goal_test, actions, result):
-    frontier = [(initial_state, [])]
+def DFSearch(initial_state, goal_test, actions, result, depth_limit):
+    frontier = [(initial_state, [], 0)]  # Include depth in the tuple
     explored = set()
     
     while frontier:
-        current_state, actions_taken = frontier.pop()
+        current_state, actions_taken, depth = frontier.pop()
         
         if goal_test(current_state):
             return actions_taken
         
         state_tuple = tuple(tuple(row) for row in current_state)
-        if state_tuple not in explored:
+        if state_tuple not in explored and depth < depth_limit:
             explored.add(state_tuple)
             
             for action in actions(current_state):
                 new_state = result(current_state, action)
                 new_actions_taken = actions_taken + [action]
-                frontier.append((new_state, new_actions_taken))
+                frontier.append((new_state, new_actions_taken, depth + 1))
     
     return None  # Return None if no solution is found
 
