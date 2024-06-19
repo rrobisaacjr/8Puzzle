@@ -1,23 +1,33 @@
+# Note: Added the depth_limit parameter to manage the depth of the solution to
+# help find a balance between searching deep enough and avoiding excessively long computations.
+# Some test cases take too much time and/or trigger memory limit errors
+
+
 def DFSearch(initial_state, goal_test, actions, result, depth_limit):
-    frontier = [(initial_state, [], 0)]  # Include depth in the tuple
+    
+    # Init frontier stack with the initial state, an empty action list, and depth 0
+    frontier = [(initial_state, [], 0)]
+    
+    # Empty set to keep track of explored states
     explored = set()
     
+    # Loop while there are states to explore
     while frontier:
-        current_state, actions_taken, depth = frontier.pop()
+        current_state, actions_taken, depth = frontier.pop()                # Pop last state, actions, and depth from the frontier stack
         
-        if goal_test(current_state):
+        if goal_test(current_state):                                        # If current state = goal state, return list of actions taken to reach the goal                                        
             return actions_taken
         
-        state_tuple = tuple(tuple(row) for row in current_state)
-        if state_tuple not in explored and depth < depth_limit:
-            explored.add(state_tuple)
+        state_tuple = tuple(tuple(row) for row in current_state)            # Convert the state to a tuple of tuples for immutability
+        if state_tuple not in explored and depth < depth_limit:             # If the state hasn't been explored and is within the depth limit, explore it
+            explored.add(state_tuple)                                       # Add state to the set of explored states
             
-            for action in actions(current_state):
-                new_state = result(current_state, action)
-                new_actions_taken = actions_taken + [action]
-                frontier.append((new_state, new_actions_taken, depth + 1))
+            for action in actions(current_state):                           # Iterate through all possible actions from the current state
+                new_state = result(current_state, action)                   # Get the new state resulting from taking the action
+                new_actions_taken = actions_taken + [action]                # Create new list of actions taken including the current action
+                frontier.append((new_state, new_actions_taken, depth + 1))  # Add new state, actionsn, and inc depth to the frontier
     
-    return None  # Return None if no solution is found
+    return None                                                             # Return None if no solution is found
 
 # Define the goal test function
 def goal_test(state):

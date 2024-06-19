@@ -366,8 +366,15 @@ class App(customtkinter.CTk):
         print("dfs")
         self.puzzle.configure(state="disabled")
         self.dfs_solve_button.configure(state="disabled")
+        
+        # Perform the DFS search
         self.solution = dfs.DFSearch(self.puzzle_values, dfs.goal_test, dfs.actions, dfs.result, 100)
         print("DFS Solution:", self.solution)
+        
+         # Check if a solution was found
+        if self.solution is None:
+            messagebox.showinfo("No Solution", "No solution was found for the given puzzle.")
+            return
         
         # Update path cost
         self.path_cost = len(self.solution)
